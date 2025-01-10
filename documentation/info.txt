@@ -1,0 +1,45 @@
+
+Different data:
+ChatGPT:
+0x01: U Disk (USB storage)
+0x02: TF Card (microSD)
+0x04: Flash Storage (if supported)
+
+To confirm the command was accepted:
+If feedback is enabled (Feedback Byte = 0x01), the DFPlayer will send an acknowledgment packet.
+If not, you can proceed to play a file and verify the TF card is being accessed.
+
+source TF=2:         7EFF0609000002FEEAEF       -->correct
+source TF=2:         7EFF0609010002FEE9EF
+
+Specify track1:     7EFF0603010001FEF7EF        --> it worked after reset, select source
+
+Volume 1:           7EFF0604000100F556EF        - does not work
+                    7EFF0604000001E009EF        --> silent
+                    7EFF0604010001F556EF        
+
+Volume 5:           7EFF06040000011108EF
+
+Volume 15:          7EFF0604000015E00CEF
+                    7EFF0604001500E00CEF
+    
+Play:               7EFF060D000000FFEEEF
+
+
+Next track:         7EFF0601000000FFFAEF                                7E FF 06 40 00 00 04 FE B7 EF (error 4=...)
+
+Reset Module:       7EFF060C000000FFF9EF        --> it replies with --> 7E FF 06 40 00 00 04 FE B7 EF (error 4=...)
+
+
+
+
+After power up:
+                                                                        7E FF 06 3F 00 00 02 FE BA EF   (TF Card on-line)
+
+Eject SD card:                                                          7E FF 06 3B 00 00 02 FE BE EF   (message1: Pull out TF card)
+                                                                        7E FF 06 3F 00 00 00 FE BC EF   (message2: No storage online)
+
+
+Insert SD card:                                                         7E FF 06 3A 00 00 02 FE BF EF   (message1: Push in TF card)
+                                                                        7E FF 06 3F 00 00 02 FE BA EF   (TF Card on-line)
+
