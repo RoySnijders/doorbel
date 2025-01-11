@@ -53,10 +53,12 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void delay_us (uint16_t us);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define NRF_INT_Pin GPIO_PIN_0
+#define NRF_INT_GPIO_Port GPIOA
 #define NRF_CE_Pin GPIO_PIN_3
 #define NRF_CE_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_4
@@ -65,8 +67,6 @@ void Error_Handler(void);
 #define NRF_CSN_GPIO_Port GPIOA
 #define BUTTON_DOOR_Pin GPIO_PIN_7
 #define BUTTON_DOOR_GPIO_Port GPIOA
-#define NRF_INT_Pin GPIO_PIN_0
-#define NRF_INT_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

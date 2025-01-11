@@ -8,11 +8,11 @@
 #include "uart.h"
 
 extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart2;
-extern UART_HandleTypeDef huart6;
+//extern UART_HandleTypeDef huart2;
+//extern UART_HandleTypeDef huart6;
 #define uart1 &huart1
-#define uart2 &huart2
-#define uart6 &huart6
+//#define uart2 &huart2
+//#define uart6 &huart6
 
 
 ring_buffer rx_buffer = { { 0 }, 0, 0};
@@ -347,11 +347,11 @@ uint8_t UartBufferFindByte(uint8_t needle)
 // ------------------------------------------------------------------------------
 void Uart_isr (UART_HandleTypeDef *huart)
 {
-	  uint32_t srflags   = READ_REG(huart->Instance->SR);
+	  uint32_t srflags   = READ_REG(huart->Instance->ISR);
 	  uint32_t cr1its     = READ_REG(huart->Instance->CR1);
 
     /* if DR is not empty and the Rx Int is enabled */
-    if (((srflags & USART_SR_RXNE) != RESET) && ((cr1its & USART_CR1_RXNEIE) != RESET))
+    if (((srflags & USART_ISR_RXNE_RXFNE) != RESET) && ((cr1its & USART_CR1_RXNEIE_RXFNEIE) != RESET))
     {
     	 /******************
     	    	      *  @note   PE (Parity error), FE (Framing error), NE (Noise error), ORE (Overrun
@@ -364,14 +364,14 @@ void Uart_isr (UART_HandleTypeDef *huart)
     	    	      * @note   TXE flag is cleared only by a write to the USART_DR register.
 
     	 *********************/
-		huart->Instance->SR;                       /* Read status register */
-        unsigned char c = huart->Instance->DR;     /* Read data register */
+		huart->Instance->ISR;                       /* Read status register */
+        unsigned char c = huart->Instance->RDR;     /* Read data register */
         Uartstore_char (c, _rx_buffer);  				// store data in buffer
         return;
     }
 
     /*If interrupt is caused due to Transmit Data Register Empty */
-    if (((srflags & USART_SR_TXE) != RESET) && ((cr1its & USART_CR1_TXEIE) != RESET))
+    if (((srflags & USART_ISR_TXFE) != RESET) && ((cr1its & USART_CR1_TXFEIE) != RESET))
     {	if(tx_buffer.head == tx_buffer.tail)
     		__HAL_UART_DISABLE_IT(huart, UART_IT_TXE);	// Buffer empty, so disable interrupts
     	else
@@ -389,8 +389,8 @@ void Uart_isr (UART_HandleTypeDef *huart)
 			*          USART_SR register followed by a write operation to USART_DR register.
 			* @note   TXE flag is cleared only by a write to the USART_DR register.
 			*********************/
-			huart->Instance->SR;
-			huart->Instance-> DR = c;
+			huart->Instance->ISR;
+			huart->Instance-> RDR = c;
     	}
     	return;
     }

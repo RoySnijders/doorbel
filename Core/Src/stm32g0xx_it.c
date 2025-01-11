@@ -22,6 +22,7 @@
 #include "stm32g0xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "uart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,7 +42,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+extern uint16_t one_ms_counter;
+extern uint16_t one_min_counter;
+extern uint16_t one_day_counter;
+extern uint8_t one_ms_flag;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,6 +59,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern TIM_HandleTypeDef htim3;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
@@ -139,6 +144,36 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32g0xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+  ////////////////////////////////////////////////////////
+   //uptime
+   if (one_ms_counter <60000)
+ 	{	one_ms_counter++;
+ 	}else
+ 	{	one_ms_counter=0;	// reset at 60 second = 1 minute
+ 		if (one_min_counter < ((24*60)-1))
+ 		{	one_min_counter++;
+ 		}else
+ 		{	one_min_counter=0;
+ 			if (one_day_counter <65000)
+ 				one_day_counter++;
+ 			else
+ 				one_day_counter=0;	// this happens after more than 20 years uptime
+ 		}
+ 	}
+   one_ms_flag=1;
+  /* USER CODE END TIM3_IRQn 1 */
+}
 
 /**
   * @brief This function handles USART1 global interrupt / USART1 wake-up interrupt through EXTI line 25.

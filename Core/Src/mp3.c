@@ -11,11 +11,10 @@
 #include <stdlib.h>
 
 #include "main.h"
-#include "cmsis_os.h"
 #include "mp3.h"
 
-extern UART_HandleTypeDef huart6;
-#define mp3 &huart6
+extern UART_HandleTypeDef huart1;
+#define mp3 &huart1
 
 
 uint8_t mp3_rxbuf[MP3_RX_LEN];
