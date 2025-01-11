@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "uart.h"
+//#include "uart.h"
 #include "nRF24L01.h"
 #include "mp3.h"
 
@@ -117,8 +117,9 @@ int main(void)
 
   uint16_t loopcounter=0,buttoncounter=BUTTON_DEADTIME;
 
-  UARTringbuffer();
-  //mp3_init();
+  //UARTringbuffer();
+  mp3_init();
+  mp3_volume(30);
   __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE);	//incase the IOC it not genreates its self
   HAL_TIM_Base_Start(&htim3);					//start/enable timer
 
@@ -137,7 +138,9 @@ int main(void)
 	  if(HAL_GPIO_ReadPin(BUTTON_DOOR_GPIO_Port, BUTTON_DOOR_Pin)==0)
   	  { //button pressed and buttoncounter == SW_DEADTIME then send command
 
-		  buttoncounter=0;	//reset timer
+		  buttoncounter=0;					//reset timer
+		  mp3_play(4);	  	  	  	  	  	//play sound track4 = file 0005.mp3
+
   	  }
   	}else
   		buttoncounter++;
